@@ -1,19 +1,15 @@
 s.boot;
+s.plotTree;
+Env.new([0.01,0.25,0.125,0.5,0.25,1,0.01],[0.25,0.25,0.5,0.5,0.5,1], \exp).plot;
+
 (
-SynthDef("tutorial-args", { arg freq = 440, out = 0;
-    Out.ar(out, SinOsc.ar(freq, 0, 0.2));
-}).add;
+x = {
+	var sig, env, freq, duration;
+	duration = 2;
+	env = EnvGen.kr(Env.new([0.01,0.25,0.125,0.5,0.25,1,0.01],[0.25,0.25,0.5,0.5,0.5,1], \exp), doneAction:2);
+	freq = XLine.kr(ExpRand(55,880),ExpRand(55,880),duration,doneAction:2);
+	sig = Pulse.ar(freq, mul: env);
+	Out.ar([0,1],sig);
+}.play;
 )
-// both write to bus 1, and their output is mixed
-x = Synth("tutorial-args", ["out", 0, "freq", 660]);
-y = Synth("tutorial-args", ["out", 1, "freq", 770]);
-x.free;
-y.free;
 
-
-f = { arg a, b;
-    "Evaluating...".postln;
-    a + b
-};
-f
-f.value(5,4);
